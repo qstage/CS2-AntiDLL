@@ -5,7 +5,7 @@ This plugin is similar to the CS:GO version.
 > [!NOTE]  
 > Required CSSharp version: **303**
 
-# Example
+# API
 
 You can take a look on the [example plugin](https://github.com/KillStr3aK/CS2-AntiDLL/tree/master/src/AntiDLL.Example)
 
