@@ -2,6 +2,7 @@
 
 {
 	"Blacklist": [
+		// "client_disconnect",
 		// "grenade_thrown",
 		// "weapon_outofammo",
 		// "spec_mode_updated",
