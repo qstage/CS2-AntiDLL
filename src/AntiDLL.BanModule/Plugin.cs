@@ -10,7 +10,8 @@
 
     public sealed class Config : BasePluginConfig
     {
-        [JsonPropertyName("Banreason")] public string BanReason { get; set; } = "[AntiDLL] your reason here";
+        [JsonPropertyName("PunishmentType")] public string PunishmentType { get; set; } = "ban";
+        [JsonPropertyName("Banreason")] public string BanReason { get; set; } = "[AntiDLL] Cheats detected";
     }
 
     public sealed class Plugin : BasePlugin, IPluginConfig<Config>
@@ -33,7 +34,18 @@
             if (!Punishedplayers.Contains(player.SteamID))
             {
                 Punishedplayers.Add(player.SteamID);
-                Server.ExecuteCommand($"css_ban #{player.UserId.Value} 0 \"{Config.BanReason}\"");
+                if(Config.PunishmentType == "kick")
+                {
+                    Server.ExecuteCommand($"css_kick #{player.UserId.Value} 0 \"{Config.BanReason}\"");
+                }
+                else if(Config.PunishmentType == "ban")
+                {
+                    Server.ExecuteCommand($"css_ban #{player.UserId.Value} 0 \"{Config.BanReason}\"");
+                }
+                else
+                {
+                    Logger.LogInformation("Config 'PunishmentType' is not found or it's invalid. Use 'ban' or 'kick'");
+                }
             }
         }
 
