@@ -15,7 +15,7 @@
 
     public sealed class Plugin : BasePlugin, IPluginConfig<Config>
     {
-        public override string ModuleName => "BanModule";
+        public override string ModuleName => "[AntiDLL] BanModule";
 
         public override string ModuleVersion => "1.0";
 
