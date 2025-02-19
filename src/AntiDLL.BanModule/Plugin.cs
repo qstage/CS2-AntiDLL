@@ -23,20 +23,17 @@
 
         private static PluginCapability<IAntiDLL> AntiDLL { get; } = new PluginCapability<IAntiDLL>("AntiDLL");
         public Config Config { get; set; } = new();
-        private HashSet<string> Punishedplayers = new HashSet<string>();
+        private HashSet<ulong> Punishedplayers = [];
 
         private void OnDetection(CCSPlayerController player, string eventName)
         {
-            var playerid = player.UserId;
-            string steamid = player.SteamID.ToString();
 
             base.Logger.LogInformation("Player {0} cooks {1}", player.PlayerName, eventName);
 
-            if (!Punishedplayers.Contains(steamid))
+            if (!Punishedplayers.Contains(player.SteamID))
             {
-                Punishedplayers.Add(steamid);
-                Server.ExecuteCommand($"css_ban {playerid} 0 \"{Config.BanReason}\"");
-                //AddTimer(300.0f, () => Punishedplayers.Remove(steamid));
+                Punishedplayers.Add(player.SteamID);
+                Server.ExecuteCommand($"css_ban #{player.UserId.Value} 0 \"{Config.BanReason}\"");
             }
         }
 
@@ -45,9 +42,8 @@
             if (@event == null) return HookResult.Continue;
             var player = @event.Userid;
             if (player == null || !player.IsValid || player.IsBot) return HookResult.Continue;
-            string steamid = player.SteamID.ToString();
 
-            Punishedplayers.Remove(steamid);
+            Punishedplayers.Remove(player.SteamID);
 
             return HookResult.Continue;
         }
