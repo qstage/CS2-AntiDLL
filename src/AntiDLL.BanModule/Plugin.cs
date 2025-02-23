@@ -1,4 +1,4 @@
-﻿namespace BanModule
+﻿namespace AntiDLL.BanModule
 {
 
     using CounterStrikeSharp.API;
@@ -12,13 +12,16 @@
     {
         [JsonPropertyName("PunishmentType")] public string PunishmentType { get; set; } = "ban";
         [JsonPropertyName("Banreason")] public string BanReason { get; set; } = "[AntiDLL] Cheats detected";
+        [JsonPropertyName("UseSteamID64")] public bool UseSteamID { get; set; } = false;
+        [JsonPropertyName("BanCommand")] public string BanCommand { get; set; } = "css_ban";
+        [JsonPropertyName("KickCommand")] public string KickCommand { get; set; } = "css_kick";
     }
 
     public sealed class Plugin : BasePlugin, IPluginConfig<Config>
     {
         public override string ModuleName => "[AntiDLL] BanModule";
 
-        public override string ModuleVersion => "1.0";
+        public override string ModuleVersion => "1.1";
 
         public override string ModuleAuthor => "verneri";
 
@@ -29,35 +32,33 @@
         private void OnDetection(CCSPlayerController player, string eventName)
         {
 
-            base.Logger.LogInformation("Player {0} cooks {1}", player.PlayerName, eventName);
+            base.Logger.LogInformation("Player {0} detected violating {1}", player.PlayerName, eventName);
 
             if (!Punishedplayers.Contains(player.SteamID))
             {
                 Punishedplayers.Add(player.SteamID);
-                if(Config.PunishmentType == "kick")
+                Logger.LogInformation($"Added {player.PlayerName} to 'Punishedplayers' list.");
+
+
+                string identifier = Config.UseSteamID ? player.SteamID.ToString() : $"#{player.UserId}";
+
+                if (string.IsNullOrEmpty(Config.PunishmentType) || (!Config.PunishmentType.Equals("kick", StringComparison.OrdinalIgnoreCase) && !Config.PunishmentType.Equals("ban", StringComparison.OrdinalIgnoreCase)))
                 {
-                    Server.ExecuteCommand($"css_kick #{player.UserId.Value} 0 \"{Config.BanReason}\"");
+                    Logger.LogInformation("Config 'PunishmentType' is invalid. Use 'ban' or 'kick'.");
+                    return;
                 }
-                else if(Config.PunishmentType == "ban")
-                {
-                    Server.ExecuteCommand($"css_ban #{player.UserId.Value} 0 \"{Config.BanReason}\"");
-                }
-                else
-                {
-                    Logger.LogInformation("Config 'PunishmentType' is not found or it's invalid. Use 'ban' or 'kick'");
-                }
+
+                string command = Config.PunishmentType.Equals("kick", StringComparison.OrdinalIgnoreCase)
+                                 ? $"{Config.KickCommand} {identifier} \"{Config.BanReason}\""
+                                 : $"{Config.BanCommand} {identifier} 0 \"{Config.BanReason}\"";
+
+                Server.ExecuteCommand(command);
+                Logger.LogInformation($"{Config.PunishmentType.ToUpper()}ED {player.PlayerName} for violating {eventName}");
+
+                AddTimer(10.0f, () => Punishedplayers.Remove(player.SteamID));
             }
-        }
 
-        public HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
-        {
-            if (@event == null) return HookResult.Continue;
-            var player = @event.Userid;
-            if (player == null || !player.IsValid || player.IsBot) return HookResult.Continue;
-
-            Punishedplayers.Remove(player.SteamID);
-
-            return HookResult.Continue;
+            
         }
 
         public override void OnAllPluginsLoaded(bool hotReload)
