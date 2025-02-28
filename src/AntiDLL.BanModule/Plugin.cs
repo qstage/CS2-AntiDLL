@@ -26,19 +26,19 @@
         public override string ModuleAuthor => "verneri";
 
         private static PluginCapability<IAntiDLL> AntiDLL { get; } = new PluginCapability<IAntiDLL>("AntiDLL");
+
         public Config Config { get; set; } = new();
+
         private HashSet<ulong> Punishedplayers = [];
 
         private void OnDetection(CCSPlayerController player, string eventName)
         {
-
             base.Logger.LogInformation("Player {0} detected violating {1}", player.PlayerName, eventName);
 
             if (!Punishedplayers.Contains(player.SteamID))
             {
                 Punishedplayers.Add(player.SteamID);
                 Logger.LogInformation($"Added {player.PlayerName} to 'Punishedplayers' list.");
-
 
                 string identifier = Config.UseSteamID ? player.SteamID.ToString() : $"#{player.UserId}";
 
@@ -57,8 +57,6 @@
 
                 AddTimer(10.0f, () => Punishedplayers.Remove(player.SteamID));
             }
-
-            
         }
 
         public override void OnAllPluginsLoaded(bool hotReload)
