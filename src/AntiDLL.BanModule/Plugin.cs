@@ -11,7 +11,7 @@
     public sealed class Config : BasePluginConfig
     {
         [JsonPropertyName("PunishmentType")] public string PunishmentType { get; set; } = "ban";
-        [JsonPropertyName("Banreason")] public string BanReason { get; set; } = "[AntiDLL] Cheats detected";
+        [JsonPropertyName("PunishmentReason")] public string PunishmentReason { get; set; } = "[AntiDLL] Cheats detected";
         [JsonPropertyName("UseSteamID64")] public bool UseSteamID { get; set; } = false;
         [JsonPropertyName("BanCommand")] public string BanCommand { get; set; } = "css_ban";
         [JsonPropertyName("KickCommand")] public string KickCommand { get; set; } = "css_kick";
@@ -49,8 +49,8 @@
                 }
 
                 string command = Config.PunishmentType.Equals("kick", StringComparison.OrdinalIgnoreCase)
-                                 ? $"{Config.KickCommand} {identifier} \"{Config.BanReason}\""
-                                 : $"{Config.BanCommand} {identifier} 0 \"{Config.BanReason}\"";
+                                 ? $"{Config.KickCommand} {identifier} \"{Config.PunishmentReason}\""
+                                 : $"{Config.BanCommand} {identifier} 0 \"{Config.PunishmentReason}\"";
 
                 Server.ExecuteCommand(command);
                 Logger.LogInformation($"{Config.PunishmentType.ToUpper()}ED {player.PlayerName} for violating {eventName}");
