@@ -1,12 +1,13 @@
 ﻿namespace AntiDLL.BanModule
 {
+    using System.Text.Json.Serialization;
+    using Microsoft.Extensions.Logging;
 
     using CounterStrikeSharp.API;
     using CounterStrikeSharp.API.Core;
     using CounterStrikeSharp.API.Core.Capabilities;
-    using Microsoft.Extensions.Logging;
+
     using AntiDLL.API;
-    using System.Text.Json.Serialization;
 
     public sealed class Config : BasePluginConfig
     {
@@ -35,27 +36,27 @@
         {
             base.Logger.LogInformation("Player {0} detected violating {1}", player.PlayerName, eventName);
 
-            if (!Punishedplayers.Contains(player.SteamID))
+            if (!this.Punishedplayers.Contains(player.SteamID))
             {
-                Punishedplayers.Add(player.SteamID);
-                Logger.LogInformation($"Added {player.PlayerName} to 'Punishedplayers' list.");
+                this.Punishedplayers.Add(player.SteamID);
+                base.Logger.LogInformation($"Added {player.PlayerName} to 'Punishedplayers' list.");
 
-                string identifier = Config.UseSteamID ? player.SteamID.ToString() : $"#{player.UserId}";
+                string identifier = this.Config.UseSteamID ? player.SteamID.ToString() : $"#{player.UserId}";
 
-                if (string.IsNullOrEmpty(Config.PunishmentType) || (!Config.PunishmentType.Equals("kick", StringComparison.OrdinalIgnoreCase) && !Config.PunishmentType.Equals("ban", StringComparison.OrdinalIgnoreCase)))
+                if (string.IsNullOrEmpty(this.Config.PunishmentType) || (!this.Config.PunishmentType.Equals("kick", StringComparison.OrdinalIgnoreCase) && !this.Config.PunishmentType.Equals("ban", StringComparison.OrdinalIgnoreCase)))
                 {
-                    Logger.LogInformation("Config 'PunishmentType' is invalid. Use 'ban' or 'kick'.");
+                    base.Logger.LogInformation("Config 'PunishmentType' is invalid. Use 'ban' or 'kick'.");
                     return;
                 }
 
-                string command = Config.PunishmentType.Equals("kick", StringComparison.OrdinalIgnoreCase)
-                                 ? $"{Config.KickCommand} {identifier} \"{Config.PunishmentReason}\""
-                                 : $"{Config.BanCommand} {identifier} 0 \"{Config.PunishmentReason}\"";
+                string command = this.Config.PunishmentType.Equals("kick", StringComparison.OrdinalIgnoreCase)
+                                 ? $"{this.Config.KickCommand} {identifier} \"{this.Config.PunishmentReason}\""
+                                 : $"{this.Config.BanCommand} {identifier} 0 \"{this.Config.PunishmentReason}\"";
 
                 Server.ExecuteCommand(command);
-                Logger.LogInformation($"{Config.PunishmentType.ToUpper()}ED {player.PlayerName} for violating {eventName}");
+                base.Logger.LogInformation($"{this.Config.PunishmentType.ToUpper()}ED {player.PlayerName} for violating {eventName}");
 
-                AddTimer(10.0f, () => Punishedplayers.Remove(player.SteamID));
+                AddTimer(10.0f, () => this.Punishedplayers.Remove(player.SteamID));
             }
         }
 
@@ -70,7 +71,7 @@
         }
         public void OnConfigParsed(Config config)
         {
-            Config = config;
+            this.Config = config;
         }
 
         public override void Unload(bool hotReload)
