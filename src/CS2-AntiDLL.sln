@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiDLL.API", "AntiDLL.API\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiDLL.Example", "AntiDLL.Example\AntiDLL.Example.csproj", "{990FFA0C-EA72-4332-B72A-F232C71F3662}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiDLL.BanModule", "AntiDLL.BanModule\AntiDLL.BanModule.csproj", "{096B7F7F-1EC7-6EB2-21F4-12F722B77B85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,16 @@ Global
 		{990FFA0C-EA72-4332-B72A-F232C71F3662}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{990FFA0C-EA72-4332-B72A-F232C71F3662}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{990FFA0C-EA72-4332-B72A-F232C71F3662}.Release|Any CPU.Build.0 = Release|Any CPU
+		{096B7F7F-1EC7-6EB2-21F4-12F722B77B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{096B7F7F-1EC7-6EB2-21F4-12F722B77B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{096B7F7F-1EC7-6EB2-21F4-12F722B77B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{096B7F7F-1EC7-6EB2-21F4-12F722B77B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{096B7F7F-1EC7-6EB2-21F4-12F722B77B85} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A062729A-A7AF-45D4-9A03-A3E67D6D5BE0}
