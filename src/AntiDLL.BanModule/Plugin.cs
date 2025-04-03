@@ -29,13 +29,14 @@
 
         private static PluginCapability<IAntiDLL> AntiDLL { get; } = new PluginCapability<IAntiDLL>("AntiDLL");
 
-        public Config Config { get; set; } = new();
+        public Config Config { get; set; } = new Config();
 
         private HashSet<ulong> Punishedplayers = [];
 
         private void OnDetection(CCSPlayerController player, string eventName)
         {
-            if (player == null || !player.IsValid) return;
+            if (player == null || !player.IsValid)
+                return;
 
             base.Logger.LogInformation("Player {0} detected violating {1}", player.PlayerName, eventName);
 
@@ -83,6 +84,7 @@
                 antidll.OnDetection += this.OnDetection;
             }
         }
+
         public void OnConfigParsed(Config config)
         {
             this.Config = config;
