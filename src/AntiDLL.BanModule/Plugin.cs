@@ -8,6 +8,7 @@
     using CounterStrikeSharp.API.Core.Capabilities;
 
     using AntiDLL.API;
+    using CounterStrikeSharp.API.Core.Attributes.Registration;
 
     public sealed class Config : BasePluginConfig
     {
@@ -22,7 +23,7 @@
     {
         public override string ModuleName => "[AntiDLL] BanModule";
 
-        public override string ModuleVersion => "1.2";
+        public override string ModuleVersion => "1.3";
 
         public override string ModuleAuthor => "verneri";
 
@@ -57,9 +58,20 @@
 
                 Server.ExecuteCommand(command);
                 base.Logger.LogInformation($"{this.Config.PunishmentType.ToUpper()}ED {player.PlayerName} for violating {eventName}");
-
-                AddTimer(10.0f, () => this.Punishedplayers.Remove(player.SteamID));
             }
+        }
+
+        [GameEventHandler]
+        public HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
+        {
+            CCSPlayerController? player = @event.Userid;
+
+            if (player != null && this.Punishedplayers.Contains(player.SteamID)) 
+            {
+                this.Punishedplayers.Remove(player.SteamID);
+            }
+
+            return HookResult.Continue;
         }
 
         public override void OnAllPluginsLoaded(bool hotReload)
