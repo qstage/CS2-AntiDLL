@@ -30,16 +30,18 @@
 
         public override void Load(bool hotReload)
         {
-            IGameEventManager2.Init.Hook(this.OnIGameEventManager2_Init, HookMode.Pre);
+            nint addr = IGameEventManager2.Init();
+
+            if (addr == -1)
+            {
+                base.Logger.LogError("Not found `CGameEventManager2`");
+                return;
+            }
+
+            GameEventManager = new(addr);
+
             CSource1LegacyGameEventGameSystem.ListenBitsReceived.Hook(this.OnSource1LegacyGameEventListenBitsReceived, HookMode.Pre);
-
             this.RegisterAPI(this);
-        }
-
-        private HookResult OnIGameEventManager2_Init(DynamicHook hook)
-        {
-            this.GameEventManager = hook.GetParam<IGameEventManager2>(0);
-            return HookResult.Continue;
         }
 
         private HookResult OnSource1LegacyGameEventListenBitsReceived(DynamicHook hook)
@@ -83,7 +85,6 @@
         public override void Unload(bool hotReload)
         {
             CSource1LegacyGameEventGameSystem.ListenBitsReceived.Unhook(this.OnSource1LegacyGameEventListenBitsReceived, HookMode.Pre);
-            IGameEventManager2.Init.Unhook(this.OnIGameEventManager2_Init, HookMode.Pre);
         }
     }
 }

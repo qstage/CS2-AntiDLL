@@ -6,7 +6,7 @@ namespace AntiDLL
 
     public class CLCMsg_ListenEvents : NativeObject
     {
-        private unsafe CPlayerSlot m_Slot => Marshal.PtrToStructure<CPlayerSlot>(base.Handle + 80);
+        private unsafe CPlayerSlot m_Slot => Marshal.PtrToStructure<CPlayerSlot>(base.Handle + 88);
 
         public CLCMsg_ListenEvents(nint ptr) : base(ptr)
             { }
